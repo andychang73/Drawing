@@ -20,6 +20,6 @@ public class CommandHistoryEntity {
     @Column(nullable = false, name = "command")
     private String command;
 
-    @Column(nullable = false, name = "canvas")
+    @Column(columnDefinition = "text", nullable = false, name = "canvas")
     private String canvas;
 }

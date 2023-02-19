@@ -17,6 +17,6 @@ public class RedoEntity {
     @GeneratedValue
     private Integer id;
 
-    @Column(nullable = false, name = "canvas")
+    @Column(columnDefinition = "text", nullable = false, name = "canvas")
     private String canvas;
 }
