@@ -7,6 +7,7 @@ import com.planto.drawing.entities.CommandHistoryEntity;
 import com.planto.drawing.entities.UndoEntity;
 import com.planto.drawing.enums.Command;
 import com.planto.drawing.services.CommandHistoryService;
+import com.planto.drawing.services.RedoService;
 import com.planto.drawing.services.UndoService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
@@ -21,13 +22,15 @@ public class LineCommand implements ICommand {
     private final IDraw lineDrawer;
     private final ObjectMapper objectMapper;
     private final UndoService undoService;
+    private final RedoService redoService;
     private final CommandHistoryService historyService;
 
     public LineCommand(ObjectMapper objectMapper, UndoService undoService,
-                       @Qualifier("lineDrawer") IDraw lineDrawer, CommandHistoryService historyService) {
+                       @Qualifier("lineDrawer") IDraw lineDrawer, RedoService redoService, CommandHistoryService historyService) {
         this.objectMapper = objectMapper;
         this.undoService = undoService;
         this.lineDrawer = lineDrawer;
+        this.redoService = redoService;
         this.historyService = historyService;
     }
 
@@ -49,6 +52,8 @@ public class LineCommand implements ICommand {
                 .canvas(objectMapper.writeValueAsString(canvas))
                 .build();
         historyService.add(historyEntity);
+
+        redoService.deleteAll();
 
         Printer.print(canvas);
     }

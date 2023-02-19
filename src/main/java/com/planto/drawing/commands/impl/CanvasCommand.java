@@ -7,6 +7,7 @@ import com.planto.drawing.entities.CommandHistoryEntity;
 import com.planto.drawing.entities.UndoEntity;
 import com.planto.drawing.enums.Command;
 import com.planto.drawing.services.CommandHistoryService;
+import com.planto.drawing.services.RedoService;
 import com.planto.drawing.services.UndoService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
@@ -22,23 +23,25 @@ public class CanvasCommand implements ICommand {
     private final IDraw canvasDrawer;
     private final ObjectMapper objectMapper;
     private final UndoService undoService;
+    private final RedoService redoService;
     private final CommandHistoryService historyService;
 
 
     @Autowired
     public CanvasCommand(CommandHistoryService historyService, UndoService undoService,
-                         @Qualifier("CanvasDrawer") IDraw canvasDrawer, ObjectMapper objectMapper) {
+                         @Qualifier("CanvasDrawer") IDraw canvasDrawer, ObjectMapper objectMapper, RedoService redoService) {
         this.historyService = historyService;
         this.canvasDrawer = canvasDrawer;
         this.undoService = undoService;
         this.objectMapper = objectMapper;
+        this.redoService = redoService;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
     public void execute(@NonNull final String[] params) {
-        char[][] canvas = canvasDrawer.draw(new char[][]{},params);
+        char[][] canvas = canvasDrawer.draw(new char[][]{}, params);
 
         String prevState = historyService.getLastOrEmpty();
         UndoEntity undo = UndoEntity.builder()
@@ -52,6 +55,8 @@ public class CanvasCommand implements ICommand {
                 .build();
         historyService.add(historyEntity);
 
+        redoService.deleteAll();
+
         Printer.print(canvas);
     }
 
@@ -60,7 +65,7 @@ public class CanvasCommand implements ICommand {
         return Command.C;
     }
 
-    private String getCommand(String[] params){
-        return this.getCommand().name() + " "+ String.join(" ", params);
+    private String getCommand(String[] params) {
+        return this.getCommand().name() + " " + String.join(" ", params);
     }
 }

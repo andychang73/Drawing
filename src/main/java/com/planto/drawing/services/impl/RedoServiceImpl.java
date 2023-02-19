@@ -7,6 +7,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RedoServiceImpl implements RedoService {
 
@@ -20,6 +22,21 @@ public class RedoServiceImpl implements RedoService {
     @Override
     public void add(@NonNull final RedoEntity redoEntity) {
         repository.save(redoEntity);
+    }
+
+    @Override
+    public RedoEntity getLastOrThrow() {
+        return Optional.ofNullable(repository.getLast()).orElseThrow(() -> new RuntimeException("Can't redo further"));
+    }
+
+    @Override
+    public void deleteLast(int id) {
+        repository.deleteLast(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
 }
