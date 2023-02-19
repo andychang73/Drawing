@@ -16,7 +16,21 @@ public class RectangleDrawer implements IDraw {
         int yUpperBound = canvas.length - 2;
         int[] coordinates = validateParams(params, xUpperBound, xLowerBound, yUpperBound, yLowerBound);
 
+        int x1 = coordinates[0];
+        int y1 = coordinates[1];
+        int x2 = coordinates[2];
+        int y2 = coordinates[3];
 
+        for(int i = y1; i <= y2; i++){
+            for(int k = x1; k <= x2; k++){
+                if(i == y1 || i == y2){
+                    canvas[i][k] = 'x';
+                }else if(k == x1 || k == x2){
+                    canvas[i][k] = 'x';
+                }
+            }
+        }
+        return canvas;
     }
 
     private int[] validateParams(String[] params, int xUpperBound, int xLowerBound, int yUpperBound, int yLowerBound) {

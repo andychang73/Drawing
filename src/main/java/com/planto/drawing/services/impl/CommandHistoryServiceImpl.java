@@ -26,11 +26,16 @@ public class CommandHistoryServiceImpl implements CommandHistoryService{
 
     @Override
     public String getLastOrEmpty() {
-        return Optional.ofNullable(repository.getLast()).orElse("");
+        return getLast().orElse("");
     }
 
     @Override
     public String getLastOrThrow() {
-        return Optional.ofNullable(repository.getLast()).orElseThrow(() -> new RuntimeException("Please create a canvas first"));
+        return getLast().orElseThrow(() -> new RuntimeException("Please create a canvas first"));
+    }
+
+    @Override
+    public Optional<String> getLast() {
+        return Optional.ofNullable(repository.getLast());
     }
 }

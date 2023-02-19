@@ -12,9 +12,12 @@ public class CanvasDrawer implements IDraw {
     @Override
     public char[][] draw(@NonNull char[][] canvas, @NonNull final String[] params) {
         int[] heightAndWidth = validateParams(params);
-        int numOfRows = heightAndWidth[0];
-        int numOfCols = heightAndWidth[1];
-        canvas = new char[numOfRows + 2][numOfCols];
+        int numOfRows = heightAndWidth[1];
+        int numOfCols = heightAndWidth[0];
+        canvas = new char[numOfRows + 2][numOfCols + 2];
+
+        numOfRows = canvas.length-2;
+        numOfCols = canvas[0].length;
 
         initCanvas(canvas);
         createTopBottom(canvas, 0, numOfCols);

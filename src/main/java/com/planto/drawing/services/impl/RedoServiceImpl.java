@@ -5,7 +5,9 @@ import com.planto.drawing.repositories.RedoRepository;
 import com.planto.drawing.services.RedoService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RedoServiceImpl implements RedoService {
 
     private final RedoRepository repository;
@@ -19,4 +21,5 @@ public class RedoServiceImpl implements RedoService {
     public void add(@NonNull final RedoEntity redoEntity) {
         repository.save(redoEntity);
     }
+
 }
