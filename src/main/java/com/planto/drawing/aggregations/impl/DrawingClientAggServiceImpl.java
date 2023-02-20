@@ -29,7 +29,6 @@ public class DrawingClientAggServiceImpl implements DrawingClientAggService {
             }catch (RuntimeException ex){
                 System.out.println(ex.getMessage());
             }
-
         }
     }
 
