@@ -42,10 +42,10 @@ public class RectangleDrawer implements IDraw {
         int x2 = IntegerParser.parseStr(params[2]);
         int y2 = IntegerParser.parseStr(params[3]);
 
-        if(x1 < 0 || x1 >= x2){
+        if(x1 >= x2){
             throw new IllegalArgumentException("Invalid rectangle parameters");
         }
-        if(y1 < 0 || y1 >= y2){
+        if(y1 >= y2){
             throw new IllegalArgumentException("Invalid rectangle parameters");
         }
         if(x1 < xLowerBound || x1 > xUpperBound){

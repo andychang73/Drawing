@@ -39,21 +39,10 @@ public class LineDrawer implements IDraw {
             throw new IllegalArgumentException("Invalid line parameters");
         }
         int x1 = IntegerParser.parseStr(params[0]);
-        if(x1 < 0){
-            throw new IllegalArgumentException("Invalid line parameters");
-        }
         int y1 = IntegerParser.parseStr(params[1]);
-        if(y1 < 0){
-            throw new IllegalArgumentException("Invalid line parameters");
-        }
         int x2 = IntegerParser.parseStr(params[2]);
-        if(x2 < 0){
-            throw new IllegalArgumentException("Invalid line parameters");
-        }
         int y2 = IntegerParser.parseStr(params[3]);
-        if(y2 < 0){
-            throw new IllegalArgumentException("Invalid line parameters");
-        }
+
         if(x1 < xLowerBound || x1 > xUpperBound){
             throw new IllegalArgumentException("Line parameters must not be out of bound");
         }

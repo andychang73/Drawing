@@ -6,9 +6,9 @@ import lombok.experimental.UtilityClass;
 public class Printer {
 
     public static void print(char[][] canvas){
-        for(int i = 0; i < canvas.length; i++){
-            for(int k = 0; k < canvas[i].length; k++){
-                System.out.print(canvas[i][k]);
+        for (char[] canva : canvas) {
+            for (char c : canva) {
+                System.out.print(c);
             }
             System.out.println();
         }

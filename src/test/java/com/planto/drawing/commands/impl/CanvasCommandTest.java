@@ -1,6 +1,7 @@
-package com.planto.drawing.commands;
+package com.planto.drawing.commands.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.planto.drawing.commands.ICommand;
 import com.planto.drawing.commands.impl.CanvasCommand;
 import com.planto.drawing.draw.IDraw;
 import com.planto.drawing.services.CommandHistoryService;

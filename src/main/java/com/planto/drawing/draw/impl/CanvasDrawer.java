@@ -33,11 +33,11 @@ public class CanvasDrawer implements IDraw {
             throw new IllegalArgumentException("Invalid Canvas parameters");
         }
         int height = IntegerParser.parseStr(params[0]);
-        if(height < 0){
+        if(height < 1){
             throw new IllegalArgumentException("Invalid Canvas parameters");
         }
         int width = IntegerParser.parseStr(params[1]);
-        if(width < 0){
+        if(width < 1){
             throw new IllegalArgumentException("Invalid Canvas parameters");
         }
         return new int[]{height, width};

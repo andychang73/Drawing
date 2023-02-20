@@ -1,7 +1,8 @@
-package com.planto.drawing.commands;
+package com.planto.drawing.commands.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.planto.drawing.commands.ICommand;
 import com.planto.drawing.commands.impl.RedoCommand;
 import com.planto.drawing.entities.RedoEntity;
 import com.planto.drawing.services.CommandHistoryService;
