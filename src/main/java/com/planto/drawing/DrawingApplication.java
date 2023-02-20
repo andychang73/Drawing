@@ -23,7 +23,7 @@ public class DrawingApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		System.out.println();
 		System.out.println();
 		System.out.println("Starting Drawing Program...............");
