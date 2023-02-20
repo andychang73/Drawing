@@ -1,18 +1,24 @@
 package com.planto.drawing.draw.impl;
 
 import com.planto.drawing.draw.IDraw;
+import com.planto.drawing.services.SymbolService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.when;
+@RunWith(MockitoJUnitRunner.class)
 public class RectangleDrawerTest {
 
     @Mock private IDraw rectangleDrawer;
+    @Mock private SymbolService symbolService;
 
     @Before
     public void init(){
-        rectangleDrawer = new RectangleDrawer();
+        rectangleDrawer = new RectangleDrawer(symbolService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -57,6 +63,7 @@ public class RectangleDrawerTest {
 
     @Test
     public void testDraw_Succeed(){
+        when(symbolService.getSymbol()).thenReturn('x');
         char[][] canvas = rectangleDrawer.draw(getCanvas(), new String[]{"1","1","3","3"});
         char[][] result = getResult();
 

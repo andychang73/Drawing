@@ -8,6 +8,7 @@ import com.planto.drawing.entities.UndoEntity;
 import com.planto.drawing.enums.Command;
 import com.planto.drawing.services.CommandHistoryService;
 import com.planto.drawing.services.RedoService;
+import com.planto.drawing.services.SymbolService;
 import com.planto.drawing.services.UndoService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
@@ -29,7 +30,8 @@ public class CanvasCommand implements ICommand {
 
     @Autowired
     public CanvasCommand(CommandHistoryService historyService, UndoService undoService,
-                         @Qualifier("CanvasDrawer") IDraw canvasDrawer, ObjectMapper objectMapper, RedoService redoService) {
+                         @Qualifier("CanvasDrawer") IDraw canvasDrawer, ObjectMapper objectMapper,
+                         RedoService redoService, SymbolService symbolService) {
         this.historyService = historyService;
         this.canvasDrawer = canvasDrawer;
         this.undoService = undoService;

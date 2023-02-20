@@ -2,10 +2,10 @@ package com.planto.drawing.commands.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planto.drawing.commands.ICommand;
-import com.planto.drawing.commands.impl.CanvasCommand;
 import com.planto.drawing.draw.IDraw;
 import com.planto.drawing.services.CommandHistoryService;
 import com.planto.drawing.services.RedoService;
+import com.planto.drawing.services.SymbolService;
 import com.planto.drawing.services.UndoService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +23,14 @@ public class CanvasCommandTest {
     @Mock private ObjectMapper objectMapper;
     @Mock private UndoService undoService;
     @Mock private RedoService redoService;
+    @Mock private SymbolService symbolService;
     @Mock private CommandHistoryService commandHistoryService;
     @Mock private ICommand canvasCommand;
 
     @Before
     public void init(){
         canvasCommand = new CanvasCommand(commandHistoryService, undoService,
-                canvasDrawer, objectMapper, redoService);
+                canvasDrawer, objectMapper, redoService, symbolService);
 
     }
 

@@ -4,6 +4,7 @@ import com.planto.drawing.draw.IDraw;
 import com.planto.drawing.draw.line.ILine;
 import com.planto.drawing.draw.line.impl.HorizontalLine;
 import com.planto.drawing.draw.line.impl.VerticalLine;
+import com.planto.drawing.services.SymbolService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,13 +19,14 @@ public class LineDrawerTest {
     @Mock private ILine vertical;
     @Mock private List<ILine> lines;
     @Mock private IDraw lineDrawer;
+    @Mock private SymbolService symbolService;
 
     @Before
     public void init(){
         horizontal = new HorizontalLine();
         vertical = new VerticalLine();
         lines = Arrays.asList(horizontal, vertical);
-        lineDrawer = new LineDrawer(lines);
+        lineDrawer = new LineDrawer(lines, symbolService);
     }
 
     @Test(expected = IllegalArgumentException.class)

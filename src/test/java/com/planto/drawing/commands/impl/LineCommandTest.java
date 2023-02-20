@@ -1,12 +1,11 @@
 package com.planto.drawing.commands.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planto.drawing.commands.ICommand;
-import com.planto.drawing.commands.impl.LineCommand;
 import com.planto.drawing.draw.IDraw;
 import com.planto.drawing.services.CommandHistoryService;
 import com.planto.drawing.services.RedoService;
+import com.planto.drawing.services.SymbolService;
 import com.planto.drawing.services.UndoService;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,12 +24,13 @@ public class LineCommandTest {
     @Mock private UndoService undoService;
     @Mock private RedoService redoService;
     @Mock private CommandHistoryService historyService;
+    @Mock private SymbolService symbolService;
     @Mock private ICommand lineCommand;
 
     @Before
     public void init(){
         lineCommand = new LineCommand(objectMapper, undoService,
-                lineDrawer, redoService, historyService);
+                lineDrawer, redoService, symbolService, historyService);
     }
 
     @Test

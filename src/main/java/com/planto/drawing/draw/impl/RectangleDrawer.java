@@ -1,12 +1,21 @@
 package com.planto.drawing.draw.impl;
 
 import com.planto.drawing.draw.IDraw;
+import com.planto.drawing.services.SymbolService;
 import com.planto.drawing.utils.IntegerParser;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("rectangleDrawer")
 public class RectangleDrawer implements IDraw {
+
+    private final SymbolService symbolService;
+
+    @Autowired
+    public RectangleDrawer(SymbolService symbolService) {
+        this.symbolService = symbolService;
+    }
 
     @Override
     public char[][] draw(@NonNull char[][] canvas, @NonNull final String[] params) {
@@ -20,13 +29,14 @@ public class RectangleDrawer implements IDraw {
         int y1 = coordinates[1];
         int x2 = coordinates[2];
         int y2 = coordinates[3];
+        char symbol = symbolService.getSymbol();
 
         for(int i = y1; i <= y2; i++){
             for(int k = x1; k <= x2; k++){
                 if(i == y1 || i == y2){
-                    canvas[i][k] = 'x';
+                    canvas[i][k] = symbol;
                 }else if(k == x1 || k == x2){
-                    canvas[i][k] = 'x';
+                    canvas[i][k] = symbol;
                 }
             }
         }
@@ -49,16 +59,16 @@ public class RectangleDrawer implements IDraw {
             throw new IllegalArgumentException("Invalid rectangle parameters");
         }
         if(x1 < xLowerBound || x1 > xUpperBound){
-            throw new IllegalArgumentException("Line parameters must not be out of bound");
+            throw new IllegalArgumentException("Rectangle parameters must not be out of bound");
         }
         if(x2 > xUpperBound){
-            throw new IllegalArgumentException("Line parameters must not be out of bound");
+            throw new IllegalArgumentException("Rectangle parameters must not be out of bound");
         }
         if(y1 < yLowerBound || y1 > yUpperBound){
-            throw new IllegalArgumentException("Line parameters must not be out of bound");
+            throw new IllegalArgumentException("Rectangle parameters must not be out of bound");
         }
         if(y2 > yUpperBound){
-            throw new IllegalArgumentException("Line parameters must not be out of bound");
+            throw new IllegalArgumentException("Rectangle parameters must not be out of bound");
         }
         return new int[]{x1,y1,x2,y2};
     }

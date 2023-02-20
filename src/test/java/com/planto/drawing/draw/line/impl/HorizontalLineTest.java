@@ -1,7 +1,6 @@
 package com.planto.drawing.draw.line.impl;
 
 import com.planto.drawing.draw.line.ILine;
-import com.planto.drawing.draw.line.impl.HorizontalLine;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

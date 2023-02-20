@@ -2,6 +2,7 @@ package com.planto.drawing.draw.impl;
 
 import com.planto.drawing.draw.IDraw;
 import com.planto.drawing.draw.line.ILine;
+import com.planto.drawing.services.SymbolService;
 import com.planto.drawing.utils.IntegerParser;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,12 @@ import java.util.List;
 public class LineDrawer implements IDraw {
 
     private final List<ILine> lines;
+    private final SymbolService symbolService;
 
     @Autowired
-    public LineDrawer(List<ILine> lines) {
+    public LineDrawer(List<ILine> lines, SymbolService symbolService) {
         this.lines = lines;
+        this.symbolService = symbolService;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class LineDrawer implements IDraw {
         return lines.stream()
                 .filter(l -> l.checkLineType(coordinates))
                 .findFirst()
-                .map(l -> l.drawLine(canvas, coordinates, 'x'))
+                .map(l -> l.drawLine(canvas, coordinates, symbolService.getSymbol()))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Line Type parameters"));
     }
 
