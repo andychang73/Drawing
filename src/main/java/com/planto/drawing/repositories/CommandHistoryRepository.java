@@ -13,4 +13,10 @@ public interface CommandHistoryRepository extends JpaRepository<CommandHistoryEn
             nativeQuery = true
     )
     String getLast();
+
+    @Query(
+            value = "SELECT canvas FROM command_history WHERE id = ?1",
+            nativeQuery = true
+    )
+    String selectById(int index);
 }

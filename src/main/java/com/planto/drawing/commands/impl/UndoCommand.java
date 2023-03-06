@@ -1,14 +1,8 @@
 package com.planto.drawing.commands.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.planto.drawing.aggregations.OriginatorAggService;
 import com.planto.drawing.commands.AbstractCommand;
-import com.planto.drawing.entities.CommandHistoryEntity;
-import com.planto.drawing.entities.RedoEntity;
-import com.planto.drawing.entities.UndoEntity;
 import com.planto.drawing.enums.Command;
-import com.planto.drawing.services.CommandHistoryService;
-import com.planto.drawing.services.RedoService;
-import com.planto.drawing.services.UndoService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -19,43 +13,42 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class UndoCommand extends AbstractCommand {
 
-    private final UndoService undoService;
-    private final RedoService redoService;
-    private final ObjectMapper objectMapper;
-    private final CommandHistoryService historyService;
+    private final OriginatorAggService originatorAggService;
 
     @Autowired
-    public UndoCommand(UndoService undoService, RedoService redoService, ObjectMapper objectMapper, CommandHistoryService historyService) {
-        this.undoService = undoService;
-        this.redoService = redoService;
-        this.objectMapper = objectMapper;
-        this.historyService = historyService;
+    public UndoCommand(OriginatorAggService originatorAggService) {
+        this.originatorAggService = originatorAggService;
+
     }
 
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
     public void execute(@NonNull final String input) {
-        String currentState = historyService.getLast().orElseThrow(() -> new RuntimeException("Can't undo"));
-
-        RedoEntity redo = RedoEntity.builder()
-                .canvas(currentState)
-                .build();
-        redoService.add(redo);
-
-        UndoEntity undo = undoService.getLastOrThrow();
-        undoService.deleteLast(undo.getId());
-
-        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-                .command(getCommand().name())
-                .canvas(undo.getCanvas())
-                .build();
-        historyService.add(historyEntity);
-
-        if(undo.getCanvas().isBlank()){
-            return;
-        }
-        Printer.print(objectMapper.readValue(undo.getCanvas(), char[][].class));
+//        Printer.print(
+//                originatorAggService.undo().orElseThrow(() -> new RuntimeException("Can't undo"))
+//        );
+        originatorAggService.undo().ifPresent(Printer::print);
+//        String currentState = historyService.getLast().orElseThrow(() -> new RuntimeException("Can't undo"));
+//
+//        RedoEntity redo = RedoEntity.builder()
+//                .canvas(currentState)
+//                .build();
+//        redoService.add(redo);
+//
+//        UndoEntity undo = undoService.getLastOrThrow();
+//        undoService.deleteLast(undo.getId());
+//
+//        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
+//                .command(getCommand().name())
+//                .canvas(undo.getCanvas())
+//                .build();
+//        historyService.add(historyEntity);
+//
+//        if(undo.getCanvas().isBlank()){
+//            return;
+//        }
+//        Printer.print(objectMapper.readValue(undo.getCanvas(), char[][].class));
     }
 
     @Override

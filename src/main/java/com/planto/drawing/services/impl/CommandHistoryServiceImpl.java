@@ -37,4 +37,9 @@ public class CommandHistoryServiceImpl implements CommandHistoryService{
     public Optional<String> getLast() {
         return Optional.ofNullable(repository.getLast());
     }
+
+    @Override
+    public String getById(int index) {
+        return repository.selectById(index);
+    }
 }

@@ -40,12 +40,14 @@ public class DrawingApplication implements CommandLineRunner {
 						.symbol('x')
 						.build()
 		);
-		historyService.add(
-				CommandHistoryEntity.builder()
-						.command("init")
-						.canvas("")
-						.build()
-		);
+		// todo
+//		historyService.add(
+//				CommandHistoryEntity.builder()
+//						.id(1)
+//						.command("init")
+//						.canvas("")
+//						.build()
+//		);
 	}
 
 	@Override

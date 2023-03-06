@@ -11,4 +11,6 @@ public interface CommandHistoryService {
     String getLastOrThrow();
 
     Optional<String> getLast();
+
+    String getById(int index);
 }
