@@ -1,7 +1,7 @@
 package com.planto.drawing.commands.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.planto.drawing.commands.ICommand;
+import com.planto.drawing.commands.AbstractCommand;
 import com.planto.drawing.entities.CommandHistoryEntity;
 import com.planto.drawing.entities.RedoEntity;
 import com.planto.drawing.entities.UndoEntity;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class RedoCommand implements ICommand {
+public class RedoCommand extends AbstractCommand {
 
     private final UndoService undoService;
     private final RedoService redoService;
@@ -33,7 +33,7 @@ public class RedoCommand implements ICommand {
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
-    public void execute(@NonNull final String[] params) {
+    public void execute(@NonNull final String input) {
         String currentState = historyService.getLastOrThrow();
 
         UndoEntity undo = UndoEntity.builder()
@@ -51,6 +51,15 @@ public class RedoCommand implements ICommand {
         historyService.add(historyEntity);
 
         Printer.print(objectMapper.readValue(redo.getCanvas(), char[][].class));
+    }
+
+    @Override
+    public boolean validateInput(@NonNull final String input) {
+        int[] params = parseParams(input);
+        if(params.length != 0){
+            throw new IllegalArgumentException("Invalid Redo parameters");
+        }
+        return true;
     }
 
     @Override

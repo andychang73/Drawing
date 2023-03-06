@@ -1,41 +1,54 @@
-package com.planto.drawing.commands.impl;
+package com.planto.drawing.aggregations.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.planto.drawing.commands.AbstractCommand;
+import com.planto.drawing.aggregations.OriginatorAggService;
 import com.planto.drawing.entities.CommandHistoryEntity;
 import com.planto.drawing.entities.RedoEntity;
 import com.planto.drawing.entities.UndoEntity;
-import com.planto.drawing.enums.Command;
 import com.planto.drawing.services.CommandHistoryService;
 import com.planto.drawing.services.RedoService;
 import com.planto.drawing.services.UndoService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-@Component
-public class UndoCommand extends AbstractCommand {
+@Service
+public class OriginatorAggServiceImpl implements OriginatorAggService {
 
+    private final ObjectMapper objectMapper;
     private final UndoService undoService;
     private final RedoService redoService;
-    private final ObjectMapper objectMapper;
     private final CommandHistoryService historyService;
 
-    @Autowired
-    public UndoCommand(UndoService undoService, RedoService redoService, ObjectMapper objectMapper, CommandHistoryService historyService) {
+    public OriginatorAggServiceImpl(ObjectMapper objectMapper, UndoService undoService, RedoService redoService, CommandHistoryService historyService) {
+        this.objectMapper = objectMapper;
         this.undoService = undoService;
         this.redoService = redoService;
-        this.objectMapper = objectMapper;
         this.historyService = historyService;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+
     @SneakyThrows
     @Override
-    public void execute(@NonNull final String input) {
+    public char[][] getCanvasOrThrow() {
+        return objectMapper.readValue(historyService.getLastOrThrow(), char[][].class);
+    }
+
+    @SneakyThrows
+    @Override
+    public void save(@NonNull final String command, final char[][] canvas) {
+        historyService.add(
+                CommandHistoryEntity.builder()
+                        .command(command)
+                        .canvas(objectMapper.writeValueAsString(canvas))
+                        .build()
+        );
+    }
+
+    @SneakyThrows
+    @Override
+    public char[][] undo(@NonNull final String input) {
         String currentState = historyService.getLast().orElseThrow(() -> new RuntimeException("Can't undo"));
 
         RedoEntity redo = RedoEntity.builder()
@@ -47,28 +60,14 @@ public class UndoCommand extends AbstractCommand {
         undoService.deleteLast(undo.getId());
 
         CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-                .command(getCommand().name())
+                .command(input)
                 .canvas(undo.getCanvas())
                 .build();
         historyService.add(historyEntity);
 
         if(undo.getCanvas().isBlank()){
-            return;
+            return new char[][]{};
         }
-        Printer.print(objectMapper.readValue(undo.getCanvas(), char[][].class));
-    }
-
-    @Override
-    public boolean validateInput(@NonNull final String input) {
-        int[] params = parseParams(input);
-        if(params.length != 0){
-            throw new IllegalArgumentException("Invalid Undo parameters");
-        }
-        return true;
-    }
-
-    @Override
-    public Command getCommand() {
-        return Command.Z;
+        return objectMapper.readValue(undo.getCanvas(), char[][].class);
     }
 }

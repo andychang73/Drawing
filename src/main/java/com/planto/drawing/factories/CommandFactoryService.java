@@ -4,5 +4,5 @@ import com.planto.drawing.enums.Command;
 
 public interface CommandFactoryService {
 
-    void execute(Command command, String[] params);
+    void execute(Command command, String params);
 }

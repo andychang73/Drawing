@@ -1,65 +1,51 @@
 package com.planto.drawing.commands.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.planto.drawing.commands.ICommand;
-import com.planto.drawing.draw.IDraw;
-import com.planto.drawing.entities.CommandHistoryEntity;
-import com.planto.drawing.entities.UndoEntity;
+import com.planto.drawing.aggregations.OriginatorAggService;
+import com.planto.drawing.commands.AbstractCommand;
 import com.planto.drawing.enums.Command;
-import com.planto.drawing.services.CommandHistoryService;
-import com.planto.drawing.services.RedoService;
-import com.planto.drawing.services.SymbolService;
-import com.planto.drawing.services.UndoService;
+import com.planto.drawing.enums.Shape;
+import com.planto.drawing.factories.ShapeFactoryService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class RectangleCommand implements ICommand {
+public class RectangleCommand extends AbstractCommand {
 
-    private final IDraw rectangleDrawer;
-    private final ObjectMapper objectMapper;
-    private final UndoService undoService;
-    private final RedoService redoService;
-    private final SymbolService symbolService;
-    private final CommandHistoryService historyService;
+    private final OriginatorAggService originatorAggService;
+    private final ShapeFactoryService shapeFactoryService;
 
-    public RectangleCommand(@Qualifier("rectangleDrawer") IDraw rectangleDrawer, ObjectMapper objectMapper,
-                            UndoService undoService, RedoService redoService, SymbolService symbolService,
-                            CommandHistoryService historyService) {
-        this.rectangleDrawer = rectangleDrawer;
-        this.objectMapper = objectMapper;
-        this.undoService = undoService;
-        this.redoService = redoService;
-        this.symbolService = symbolService;
-        this.historyService = historyService;
+    @Autowired
+    public RectangleCommand(OriginatorAggService originatorAggService, ShapeFactoryService shapeFactoryService) {
+        this.originatorAggService = originatorAggService;
+        this.shapeFactoryService = shapeFactoryService;
     }
+
 
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
-    public void execute(@NonNull final String[] params) {
-        String prevState = historyService.getLastOrThrow();
-        UndoEntity undo = UndoEntity.builder()
-                .canvas(prevState)
-                .build();
-        undoService.add(undo);
+    public void execute(@NonNull final String input) {
+        char[][] prevState = originatorAggService.getCanvasOrThrow();
 
-        char[][] canvas = objectMapper.readValue(prevState, char[][].class);
-        canvas = rectangleDrawer.draw(canvas, params);
+        char[][] current = shapeFactoryService.draw(Shape.RECTANGLE, prevState, parseParams(input));
 
-        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-                .command(getCommand(params))
-                .canvas(objectMapper.writeValueAsString(canvas))
-                .build();
-        historyService.add(historyEntity);
+        originatorAggService.save(input, current);
 
-        redoService.deleteAll();
+        Printer.print(current);
+    }
 
-        Printer.print(canvas);
+    @Override
+    public boolean validateInput(@NonNull final String input) {
+        int[] params = parseParams(input);
+        validateParams(params);
+        if(params.length != 4){
+            throw new IllegalArgumentException("Invalid Rectangle parameters");
+        }
+        return true;
     }
 
     @Override
@@ -67,7 +53,5 @@ public class RectangleCommand implements ICommand {
         return Command.R;
     }
 
-    private String getCommand(String[] params){
-        return this.getCommand().name() + " " + String.join(" ", params);
-    }
+
 }

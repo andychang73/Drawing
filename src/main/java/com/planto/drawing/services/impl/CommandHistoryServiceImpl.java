@@ -25,13 +25,12 @@ public class CommandHistoryServiceImpl implements CommandHistoryService{
     }
 
     @Override
-    public String getLastOrEmpty() {
-        return getLast().orElse("");
-    }
-
-    @Override
     public String getLastOrThrow() {
-        return getLast().orElseThrow(() -> new RuntimeException("Please create a canvas first"));
+        String canvasStr = getLast().orElseThrow(() -> new RuntimeException("Please create a canvas first"));
+        if(canvasStr.isBlank()){
+            throw new RuntimeException("Please create a canvas first");
+        }
+        return canvasStr;
     }
 
     @Override

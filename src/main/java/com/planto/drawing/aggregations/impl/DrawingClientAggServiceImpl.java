@@ -23,21 +23,12 @@ public class DrawingClientAggServiceImpl implements DrawingClientAggService {
         Scanner scanner = new Scanner(System.in);
         while(true){
             System.out.print("enter command: ");
-            String[] input = scanner.nextLine().trim().split(" ");
+            String input = scanner.nextLine().trim();
             try{
-                commandFactoryService.execute(Command.value(input[0]), getParams(input));
+                commandFactoryService.execute(Command.value(input.charAt(0)), input);
             }catch (RuntimeException ex){
                 System.out.println(ex.getMessage());
             }
         }
-    }
-
-    private String[] getParams(String[] input){
-        if(input.length == 1){
-            return new String[0];
-        }
-        String[] params = new String[input.length-1];
-        System.arraycopy(input, 1, params, 0, input.length - 1);
-        return params;
     }
 }

@@ -10,7 +10,7 @@ public class IntegerParser {
         try{
             return Integer.parseInt(str);
         }catch (NumberFormatException ex){
-            throw new IllegalArgumentException("Input String cannot be parsed ot Integer");
+            throw new IllegalArgumentException("Input String cannot be parsed to Integer");
         }
     }
 }

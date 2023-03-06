@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+// todo to be delete
 @Getter
 @Setter
 @Entity

@@ -1,65 +1,48 @@
 package com.planto.drawing.commands.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.planto.drawing.commands.ICommand;
-import com.planto.drawing.draw.IDraw;
-import com.planto.drawing.entities.CommandHistoryEntity;
-import com.planto.drawing.entities.UndoEntity;
+import com.planto.drawing.aggregations.OriginatorAggService;
+import com.planto.drawing.commands.AbstractCommand;
 import com.planto.drawing.enums.Command;
-import com.planto.drawing.services.CommandHistoryService;
-import com.planto.drawing.services.RedoService;
-import com.planto.drawing.services.SymbolService;
-import com.planto.drawing.services.UndoService;
+import com.planto.drawing.enums.Shape;
+import com.planto.drawing.factories.ShapeFactoryService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class LineCommand implements ICommand {
+public class LineCommand extends AbstractCommand {
+    private final OriginatorAggService originatorAggService;
+    private final ShapeFactoryService shapeFactoryService;
 
-    private final IDraw lineDrawer;
-    private final ObjectMapper objectMapper;
-    private final UndoService undoService;
-    private final RedoService redoService;
-    private final SymbolService symbolService;
-    private final CommandHistoryService historyService;
-
-    public LineCommand(ObjectMapper objectMapper, UndoService undoService,
-                       @Qualifier("lineDrawer") IDraw lineDrawer, RedoService redoService,
-                       SymbolService symbolService, CommandHistoryService historyService) {
-        this.objectMapper = objectMapper;
-        this.undoService = undoService;
-        this.lineDrawer = lineDrawer;
-        this.redoService = redoService;
-        this.symbolService = symbolService;
-        this.historyService = historyService;
+    public LineCommand(OriginatorAggService originatorAggService, ShapeFactoryService shapeFactoryService) {
+        this.originatorAggService = originatorAggService;
+        this.shapeFactoryService = shapeFactoryService;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
-    public void execute(@NonNull final String[] params) {
-        String prevState = historyService.getLastOrThrow();
-        UndoEntity undo = UndoEntity.builder()
-                .canvas(prevState)
-                .build();
-        undoService.add(undo);
+    public void execute(@NonNull final String input) {
 
-        char[][] canvas = objectMapper.readValue(prevState, char[][].class);
-        canvas = lineDrawer.draw(canvas, params);
+        char[][] prevState = originatorAggService.getCanvasOrThrow();
 
-        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-                .command(getCommand(params))
-                .canvas(objectMapper.writeValueAsString(canvas))
-                .build();
-        historyService.add(historyEntity);
+        char[][] current = shapeFactoryService.draw(Shape.LINE, prevState, parseParams(input));
 
-        redoService.deleteAll();
+        originatorAggService.save(input, current);
 
-        Printer.print(canvas);
+        Printer.print(current);
+    }
+
+    @Override
+    public boolean validateInput(@NonNull final String input) {
+        int[] params = parseParams(input);
+        validateParams(params);
+        if(params.length != 4){
+            throw new IllegalArgumentException("Invalid Line parameters");
+        }
+        return true;
     }
 
     @Override
@@ -67,7 +50,5 @@ public class LineCommand implements ICommand {
         return Command.L;
     }
 
-    private String getCommand(String[] params){
-        return this.getCommand().name() + " " + String.join(" ", params);
-    }
+
 }

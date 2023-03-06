@@ -1,65 +1,47 @@
 package com.planto.drawing.commands.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.planto.drawing.commands.ICommand;
-import com.planto.drawing.draw.IDraw;
-import com.planto.drawing.entities.CommandHistoryEntity;
-import com.planto.drawing.entities.UndoEntity;
+import com.planto.drawing.aggregations.OriginatorAggService;
+import com.planto.drawing.commands.AbstractCommand;
+import com.planto.drawing.enums.CanvasType;
 import com.planto.drawing.enums.Command;
-import com.planto.drawing.services.CommandHistoryService;
-import com.planto.drawing.services.RedoService;
-import com.planto.drawing.services.SymbolService;
-import com.planto.drawing.services.UndoService;
+import com.planto.drawing.factories.CanvasFactoryService;
 import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class CanvasCommand implements ICommand {
-
-    private final IDraw canvasDrawer;
-    private final ObjectMapper objectMapper;
-    private final UndoService undoService;
-    private final RedoService redoService;
-    private final CommandHistoryService historyService;
+public class CanvasCommand extends AbstractCommand {
+    private final OriginatorAggService originatorAggService;
+    private final CanvasFactoryService canvasFactoryService;
 
 
     @Autowired
-    public CanvasCommand(CommandHistoryService historyService, UndoService undoService,
-                         @Qualifier("CanvasDrawer") IDraw canvasDrawer, ObjectMapper objectMapper,
-                         RedoService redoService, SymbolService symbolService) {
-        this.historyService = historyService;
-        this.canvasDrawer = canvasDrawer;
-        this.undoService = undoService;
-        this.objectMapper = objectMapper;
-        this.redoService = redoService;
+    public CanvasCommand(OriginatorAggService originatorAggService, CanvasFactoryService canvasFactoryService) {
+        this.originatorAggService = originatorAggService;
+        this.canvasFactoryService = canvasFactoryService;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
-    public void execute(@NonNull final String[] params) {
-        char[][] canvas = canvasDrawer.draw(new char[][]{}, params);
+    public void execute(@NonNull final String input) {
 
-        String prevState = historyService.getLastOrEmpty();
-        UndoEntity undo = UndoEntity.builder()
-                .canvas(prevState)
-                .build();
-        undoService.add(undo);
+        char[][] canvas = canvasFactoryService.create(CanvasType.RECTANGULAR, parseParams(input));
 
-        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-                .command(getCommand(params))
-                .canvas(objectMapper.writeValueAsString(canvas))
-                .build();
-        historyService.add(historyEntity);
-
-        redoService.deleteAll();
+        originatorAggService.save(input, canvas);
 
         Printer.print(canvas);
+    }
+
+    @Override
+    public boolean validateInput(@NonNull final String input) {
+        int[] params = parseParams(input);
+        validateParams(params);
+        if(params.length != 2){
+            throw new IllegalArgumentException("Invalid Canvas parameters");
+        }
+        return true;
     }
 
     @Override
@@ -67,7 +49,4 @@ public class CanvasCommand implements ICommand {
         return Command.C;
     }
 
-    private String getCommand(String[] params) {
-        return this.getCommand().name() + " " + String.join(" ", params);
-    }
 }

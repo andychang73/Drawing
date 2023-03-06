@@ -1,62 +1,40 @@
 package com.planto.drawing.draw.impl;
 
-import com.planto.drawing.draw.IDraw;
-import com.planto.drawing.utils.IntegerParser;
-import lombok.NonNull;
+import com.planto.drawing.draw.ICanvasDrawer;
+import com.planto.drawing.draw.IShapeDrawer;
+import com.planto.drawing.draw.canvas.ICanvas;
+import com.planto.drawing.enums.CanvasType;
+import com.planto.drawing.enums.Shape;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Component("CanvasDrawer")
-public class CanvasDrawer implements IDraw {
+@Component
+public class CanvasDrawer implements ICanvasDrawer {
+
+    private final Map<CanvasType, ICanvas> canvasFactory;
+    @Autowired
+    public CanvasDrawer(List<ICanvas> canvasDrawers) {
+        canvasFactory = Collections.unmodifiableMap(
+                canvasDrawers.stream()
+                        .collect(Collectors.toMap(ICanvas::getCanvasType, v -> v))
+        );
+    }
+
     @Override
-    public char[][] draw(@NonNull char[][] canvas, @NonNull final String[] params) {
-        int[] heightAndWidth = validateParams(params);
-        int numOfRows = heightAndWidth[1];
-        int numOfCols = heightAndWidth[0];
-        canvas = new char[numOfRows + 2][numOfCols + 2];
-
-        numOfRows = canvas.length-2;
-        numOfCols = canvas[0].length;
-
-        initCanvas(canvas);
-        createTopBottom(canvas, 0, numOfCols);
-        createTopBottom(canvas, numOfRows + 1, numOfCols);
-        createLeftRight(canvas, 0, numOfRows);
-        createLeftRight(canvas, numOfCols - 1, numOfRows);
-
-        return canvas;
+    public char[][] drawCanvas(final int[] params) {
+        return Optional.ofNullable(canvasFactory.get(this.getCanvasType()))
+                .orElseThrow(() -> new RuntimeException("Invalid Canvas Type"))
+                .drawCanvas(params);
     }
 
-    private int[] validateParams(String[] params){
-        if(params.length != 2){
-            throw new IllegalArgumentException("Invalid Canvas parameters");
-        }
-        int height = IntegerParser.parseStr(params[0]);
-        if(height < 1){
-            throw new IllegalArgumentException("Invalid Canvas parameters");
-        }
-        int width = IntegerParser.parseStr(params[1]);
-        if(width < 1){
-            throw new IllegalArgumentException("Invalid Canvas parameters");
-        }
-        return new int[]{height, width};
-    }
-    private void initCanvas(char[][] canvas){
-        for(char[] arr : canvas){
-            Arrays.fill(arr, ' ');
-        }
-    }
-
-    private void createTopBottom(char[][] canvas, int row, int length){
-        for(int i = 0; i < length; i++){
-            canvas[row][i] = '-';
-        }
-    }
-
-    private void createLeftRight(char[][] canvas, int col, int length){
-        for(int i = 1; i < length + 1; i++){
-            canvas[i][col] = '|';
-        }
+    @Override
+    public CanvasType getCanvasType() {
+        return CanvasType.RECTANGULAR;
     }
 }
