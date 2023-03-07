@@ -10,8 +10,6 @@ public interface CommandHistoryService {
 
     void clear(int index);
 
-    String getLastOrThrow();
-
     Optional<String> getLast();
 
     String getById(int index);
