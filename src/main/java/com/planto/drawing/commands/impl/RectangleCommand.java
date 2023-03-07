@@ -10,7 +10,6 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class RectangleCommand extends AbstractCommand {
@@ -25,7 +24,6 @@ public class RectangleCommand extends AbstractCommand {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
     public void execute(@NonNull final String input) {

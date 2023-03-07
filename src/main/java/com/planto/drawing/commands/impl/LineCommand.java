@@ -9,7 +9,6 @@ import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class LineCommand extends AbstractCommand {
@@ -21,7 +20,6 @@ public class LineCommand extends AbstractCommand {
         this.shapeFactoryService = shapeFactoryService;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
     public void execute(@NonNull final String input) {

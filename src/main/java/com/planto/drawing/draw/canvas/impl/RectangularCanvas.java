@@ -8,23 +8,6 @@ import java.util.Arrays;
 
 @Component
 public class RectangularCanvas implements ICanvas {
-//    @Override
-//    public char[][] drawCanvas(char[][] canvas, int[] params) {
-//        int numOfRows = params[1];
-//        int numOfCols = params[0];
-//        canvas = new char[numOfRows + 2][numOfCols + 2];
-//
-//        numOfRows = canvas.length-2;
-//        numOfCols = canvas[0].length;
-//
-//        initCanvas(canvas);
-//        createTopBottom(canvas, 0, numOfCols);
-//        createTopBottom(canvas, numOfRows + 1, numOfCols);
-//        createLeftRight(canvas, 0, numOfRows);
-//        createLeftRight(canvas, numOfCols - 1, numOfRows);
-//
-//        return canvas;
-//    }
 
     @Override
     public char[][] drawCanvas(final int[] params) {
