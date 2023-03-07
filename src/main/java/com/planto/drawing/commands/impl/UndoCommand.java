@@ -21,34 +21,10 @@ public class UndoCommand extends AbstractCommand {
 
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
     public void execute(@NonNull final String input) {
-//        Printer.print(
-//                originatorAggService.undo().orElseThrow(() -> new RuntimeException("Can't undo"))
-//        );
         originatorAggService.undo().ifPresent(Printer::print);
-//        String currentState = historyService.getLast().orElseThrow(() -> new RuntimeException("Can't undo"));
-//
-//        RedoEntity redo = RedoEntity.builder()
-//                .canvas(currentState)
-//                .build();
-//        redoService.add(redo);
-//
-//        UndoEntity undo = undoService.getLastOrThrow();
-//        undoService.deleteLast(undo.getId());
-//
-//        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-//                .command(getCommand().name())
-//                .canvas(undo.getCanvas())
-//                .build();
-//        historyService.add(historyEntity);
-//
-//        if(undo.getCanvas().isBlank()){
-//            return;
-//        }
-//        Printer.print(objectMapper.readValue(undo.getCanvas(), char[][].class));
     }
 
     @Override

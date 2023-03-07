@@ -18,31 +18,10 @@ public class RedoCommand extends AbstractCommand {
         this.originatorAggService = originatorAggService;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
     public void execute(@NonNull final String input) {
-//        Printer.print(
-//                originatorAggService.redo().orElseThrow(() -> new RuntimeException("Can't redo"))
-//        );
         originatorAggService.redo().ifPresent(Printer::print);
-//        String currentState = historyService.getLastOrThrow();
-//
-//        UndoEntity undo = UndoEntity.builder()
-//                .canvas(currentState)
-//                .build();
-//        undoService.add(undo);
-//
-//        RedoEntity redo = redoService.getLastOrThrow();
-//        redoService.deleteLast(redo.getId());
-//
-//        CommandHistoryEntity historyEntity = CommandHistoryEntity.builder()
-//                .command(getCommand().name())
-//                .canvas(redo.getCanvas())
-//                .build();
-//        historyService.add(historyEntity);
-//
-//        Printer.print(objectMapper.readValue(redo.getCanvas(), char[][].class));
     }
 
     @Override

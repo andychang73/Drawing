@@ -24,6 +24,9 @@ public class DrawingClientAggServiceImpl implements DrawingClientAggService {
         while(true){
             System.out.print("enter command: ");
             String input = scanner.nextLine().trim();
+            if(input.length() == 0){
+                continue;
+            }
             try{
                 commandFactoryService.execute(Command.value(input.charAt(0)), input);
             }catch (RuntimeException ex){

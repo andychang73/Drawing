@@ -2,8 +2,10 @@ package com.planto.drawing;
 
 import com.planto.drawing.aggregations.DrawingClientAggService;
 import com.planto.drawing.entities.CommandHistoryEntity;
+import com.planto.drawing.entities.CurrentStateEntity;
 import com.planto.drawing.entities.SymbolEntity;
 import com.planto.drawing.services.CommandHistoryService;
+import com.planto.drawing.services.CurrentStateService;
 import com.planto.drawing.services.SymbolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -22,13 +24,15 @@ public class DrawingApplication implements CommandLineRunner {
 	}
 
 	private final SymbolService symbolService;
-	private final CommandHistoryService historyService;
+	private final CurrentStateService currentStateService;
+	private final CommandHistoryService commandHistoryService;
 	private final DrawingClientAggService drawingClientAggService;
 
 	@Autowired
-	public DrawingApplication(SymbolService symbolService, CommandHistoryService commandHistoryService, DrawingClientAggService drawingClientAggService) {
+	public DrawingApplication(SymbolService symbolService, CurrentStateService currentStateService, CommandHistoryService commandHistoryService, DrawingClientAggService drawingClientAggService) {
 		this.symbolService = symbolService;
-		this.historyService = commandHistoryService;
+		this.currentStateService = currentStateService;
+		this.commandHistoryService = commandHistoryService;
 		this.drawingClientAggService = drawingClientAggService;
 	}
 
@@ -40,14 +44,20 @@ public class DrawingApplication implements CommandLineRunner {
 						.symbol('x')
 						.build()
 		);
-		// todo
-//		historyService.add(
-//				CommandHistoryEntity.builder()
-//						.id(1)
-//						.command("init")
-//						.canvas("")
-//						.build()
-//		);
+		currentStateService.add(
+				CurrentStateEntity.builder()
+						.id(1)
+						.index(0)
+						.resetHistory(false)
+						.build()
+		);
+		commandHistoryService.add(
+				CommandHistoryEntity.builder()
+						.id(0)
+						.canvas("")
+						.command("init")
+						.build()
+		);
 	}
 
 	@Override

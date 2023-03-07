@@ -25,6 +25,11 @@ public class CommandHistoryServiceImpl implements CommandHistoryService{
     }
 
     @Override
+    public void clear(int index) {
+        repository.clear(index);
+    }
+
+    @Override
     public String getLastOrThrow() {
         String canvasStr = getLast().orElseThrow(() -> new RuntimeException("Please create a canvas first"));
         if(canvasStr.isBlank()){
@@ -41,5 +46,10 @@ public class CommandHistoryServiceImpl implements CommandHistoryService{
     @Override
     public String getById(int index) {
         return repository.selectById(index);
+    }
+
+    @Override
+    public int getSize() {
+        return (int)repository.count();
     }
 }

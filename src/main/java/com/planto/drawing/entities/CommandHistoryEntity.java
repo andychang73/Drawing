@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class CommandHistoryEntity {
 
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, name = "command")
