@@ -26,19 +26,4 @@ public class UndoCommandTest {
     public void testValidateInput_SucceedWhenParamsLengthIsEqualToZero(){
         Assert.assertTrue(undoCommand.validateInput("Z"));
     }
-
-    // todo
-    private String getStringCanvas(){
-        return "[\"-----\",\"|   |\",\"|   |\",\"-----\"]";
-    }
-
-    private char[][] getCanvas(){
-        return new char[][]{
-                {'-','-','-','-','-'},
-                {'|',' ',' ',' ','|'},
-                {'|',' ',' ',' ','|'},
-                {'-','-','-','-','-'}
-        };
-    }
-
 }
