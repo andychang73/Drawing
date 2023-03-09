@@ -25,6 +25,7 @@ public class OriginatorAggServiceImpl implements OriginatorAggService {
         this.historyService = historyService;
     }
 
+    // command history
     // 0    1
     // ""   1
     // ^
