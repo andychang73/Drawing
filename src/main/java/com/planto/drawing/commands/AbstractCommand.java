@@ -19,6 +19,10 @@ public abstract class AbstractCommand {
         }
     }
 
+    // C    20    4
+    // {"C", " ", "20", " ", "4"}
+    // C 20 4
+    // C1 20 4
     protected int[] parseParams(String input) {
         input = input.replaceAll("\\s+", " ");
         String[] inputArr = input.split(" ");
