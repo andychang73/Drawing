@@ -1,8 +1,8 @@
 package com.planto.drawing.aggregations.impl;
 
+import com.planto.drawing.aggregations.DrawingClientAggService;
 import com.planto.drawing.enums.Command;
 import com.planto.drawing.factories.CommandFactoryService;
-import com.planto.drawing.aggregations.DrawingClientAggService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

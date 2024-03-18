@@ -7,7 +7,6 @@ import com.planto.drawing.utils.Printer;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class RedoCommand extends AbstractCommand {

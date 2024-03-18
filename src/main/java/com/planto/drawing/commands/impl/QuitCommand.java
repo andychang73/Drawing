@@ -14,8 +14,6 @@ public class QuitCommand extends AbstractCommand {
         System.exit(0);
     }
 
-    // R
-    // R 1
     @Override
     public boolean validateInput(@NonNull final String input) {
         int[] params = parseParams(input);

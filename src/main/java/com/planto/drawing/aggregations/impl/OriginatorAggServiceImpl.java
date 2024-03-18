@@ -25,10 +25,6 @@ public class OriginatorAggServiceImpl implements OriginatorAggService {
         this.historyService = historyService;
     }
 
-    // command history
-    // 0    1
-    // ""   1
-    // ^
     @SneakyThrows
     @Override
     public char[][] getCanvasOrThrow() {
@@ -39,9 +35,6 @@ public class OriginatorAggServiceImpl implements OriginatorAggService {
         return objectMapper.readValue(historyService.getById(prevIndex), char[][].class);
     }
 
-    // 0   1   2   3   4
-    // ""  1   12  125 1234
-    //              ^
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
@@ -61,9 +54,6 @@ public class OriginatorAggServiceImpl implements OriginatorAggService {
         }
     }
 
-    // 0   1   2   3   4
-    // ""  1   12  123 1234
-    //             ^
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
@@ -83,9 +73,6 @@ public class OriginatorAggServiceImpl implements OriginatorAggService {
         return Optional.empty();
     }
 
-    // 0   1   2   3   4
-    // ""  1   12  123 1234
-    //                  ^
     @Transactional(rollbackFor = Exception.class)
     @SneakyThrows
     @Override
